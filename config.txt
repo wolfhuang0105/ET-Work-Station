@@ -1,0 +1,7 @@
+{
+  "holiday_api": "https://api.airbase.online/calendar/v1/holiday/2026.json",
+  "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1292390544#gid=1292390544",
+  "sched_label": "2026/04 班表",
+  "sheet_url_next": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=2113715679#gid=2113715679",
+  "sched_label_next": "2026/05 班表"
+}
