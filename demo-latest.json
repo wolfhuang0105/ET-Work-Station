@@ -1,16 +1,16 @@
 {
   "ok": true,
-  "updated": "2026-05-07T14:35:34.918Z",
-  "generatedBy": "etalking-demo-bridge v1.0.0",
+  "updated": "2026-05-07T15:04:25.887Z",
+  "generatedBy": "etalking-demo-bridge v1.0.2",
   "count": {
-    "total": 186,
-    "kids": 117,
-    "adult": 62,
+    "total": 166,
+    "kids": 96,
+    "adult": 49,
     "filtered_jim": 2,
     "filtered_backup": 5,
-    "filtered_followup": 0,
-    "filtered_uncategorized": 0,
-    "followup_kept": 9,
+    "filtered_followup": 8,
+    "filtered_uncategorized": 6,
+    "followup_kept": 0,
     "skipped_no_date": 0,
     "skipped_no_owner": 0,
     "skipped_no_category": 0
@@ -41,13 +41,6 @@
       "dtstart": "20260501T163000",
       "dtend": "20260501T165500",
       "summary": "龔沛鈺",
-      "owner_name": "wynn.wu",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260501T183000",
-      "dtend": "20260501T185500",
-      "summary": "Lars(Kids)(5)摺紙",
       "owner_name": "wynn.wu",
       "cal": "Kids"
     },
@@ -98,7 +91,7 @@
       "dtend": "20260501T205500",
       "summary": "林玉敏",
       "owner_name": "luke.yang",
-      "cal": "Adult"
+      "cal": "Kids"
     },
     {
       "dtstart": "20260502T133000",
@@ -140,13 +133,6 @@
       "dtend": "20260502T192500",
       "summary": "張帆㚬",
       "owner_name": "wolf.huang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260502T200000",
-      "dtend": "20260502T202500",
-      "summary": "Daryl(kids)(9)",
-      "owner_name": "wynn.wu",
       "cal": "Kids"
     },
     {
@@ -196,13 +182,6 @@
       "dtend": "20260503T202500",
       "summary": "Eason(Kids)(10)",
       "owner_name": "wynn.wu",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260503T203000",
-      "dtend": "20260503T205500",
-      "summary": "林宥呈",
-      "owner_name": "lily.yang",
       "cal": "Kids"
     },
     {
@@ -257,13 +236,6 @@
     {
       "dtstart": "20260504T203000",
       "dtend": "20260504T205500",
-      "summary": "Shawna(Kids)(6)摺紙",
-      "owner_name": "lily.yang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260504T203000",
-      "dtend": "20260504T205500",
       "summary": "王柏竣(Kids)",
       "owner_name": "jordan.lee",
       "cal": "Kids"
@@ -274,13 +246,6 @@
       "summary": "陳怡樺",
       "owner_name": "jordan.lee",
       "cal": "Adult"
-    },
-    {
-      "dtstart": "20260505T130000",
-      "dtend": "20260505T132500",
-      "summary": "林宥均",
-      "owner_name": "lily.yang",
-      "cal": "Kids"
     },
     {
       "dtstart": "20260505T133000",
@@ -309,13 +274,6 @@
       "summary": "許政智",
       "owner_name": "joyce.wei",
       "cal": "Adult"
-    },
-    {
-      "dtstart": "20260505T183000",
-      "dtend": "20260505T185500",
-      "summary": "張帆㚬",
-      "owner_name": "wolf.huang",
-      "cal": "Kids"
     },
     {
       "dtstart": "20260505T190000",
@@ -357,13 +315,6 @@
       "dtend": "20260505T205500",
       "summary": "吳孟烜MGM)",
       "owner_name": "jordan.lee",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260505T203000",
-      "dtend": "20260505T205500",
-      "summary": "Ethan(Kids)(5)(摺紙)(F)",
-      "owner_name": "joy.hung",
       "cal": "Kids"
     },
     {
@@ -372,13 +323,6 @@
       "summary": "鄭書函",
       "owner_name": "jordan.lee",
       "cal": "Adult"
-    },
-    {
-      "dtstart": "20260506T133000",
-      "dtend": "20260506T135500",
-      "summary": "陳定吾",
-      "owner_name": "wynn.wu",
-      "cal": "Kids"
     },
     {
       "dtstart": "20260506T150000",
@@ -448,13 +392,6 @@
       "dtend": "20260506T202500",
       "summary": "倪沛筠Betty(kids)(10)",
       "owner_name": "luke.yang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260506T203000",
-      "dtend": "20260506T205500",
-      "summary": "Phoenix 江若菲(Kids)(5)(摺紙)",
-      "owner_name": "alan.yang",
       "cal": "Kids"
     },
     {
@@ -698,30 +635,9 @@
     {
       "dtstart": "20260508T200000",
       "dtend": "20260508T202500",
-      "summary": "王秝妍",
-      "owner_name": "lily.yang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260508T200000",
-      "dtend": "20260508T202500",
       "summary": "陳美玲",
       "owner_name": "jordan.lee",
       "cal": "Adult"
-    },
-    {
-      "dtstart": "20260508T203000",
-      "dtend": "20260508T205500",
-      "summary": "Ethan(Kids)(11)摺紙",
-      "owner_name": "wolf.huang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260508T203000",
-      "dtend": "20260508T205500",
-      "summary": "Leo(Kids)(MGM)(4)(摺紙)(M)",
-      "owner_name": "andy.shen",
-      "cal": "Kids"
     },
     {
       "dtstart": "20260508T203000",
@@ -745,13 +661,6 @@
       "cal": "Adult"
     },
     {
-      "dtstart": "20260509T130000",
-      "dtend": "20260509T132500",
-      "summary": "Bonbon蕭宇閎(Kids)(7)(摺紙)",
-      "owner_name": "andy.shen",
-      "cal": "Kids"
-    },
-    {
       "dtstart": "20260509T133000",
       "dtend": "20260509T135500",
       "summary": "魏奇奪(kids)(5)",
@@ -770,13 +679,6 @@
       "dtend": "20260509T142500",
       "summary": "Toby/楊廷御(Kids)(MGM)(8)",
       "owner_name": "elsie.lin",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260509T140000",
-      "dtend": "20260509T142500",
-      "summary": "Charlotte劉子瑄(Kids)(MGM)(11)",
-      "owner_name": "joy.hung",
       "cal": "Kids"
     },
     {
@@ -1029,7 +931,7 @@
       "dtend": "20260511T205500",
       "summary": "許志謙",
       "owner_name": "joyce.wei",
-      "cal": "Adult"
+      "cal": "Kids"
     },
     {
       "dtstart": "20260511T210000",
@@ -1125,149 +1027,9 @@
     {
       "dtstart": "20260513T190000",
       "dtend": "20260513T192500",
-      "summary": "楊哲睿",
-      "owner_name": "elsie.lin",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T190000",
-      "dtend": "20260513T192500",
       "summary": "Daniel 楊沁篖(Kids)(9)",
       "owner_name": "andy.shen",
       "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T190000",
-      "dtend": "20260513T192500",
-      "summary": "吳羽喬",
-      "owner_name": "jordan.lee",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260513T193000",
-      "dtend": "20260513T195500",
-      "summary": "柏楷Kyle(Kids)(8)摺紙",
-      "owner_name": "wynn.wu",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T193000",
-      "dtend": "20260513T195500",
-      "summary": "Ian(kids)(7)",
-      "owner_name": "lily.yang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T200000",
-      "dtend": "20260513T202500",
-      "summary": "Thor(Kids)",
-      "owner_name": "kyle.chiang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T200000",
-      "dtend": "20260513T202500",
-      "summary": "Luvina(5)摺紙",
-      "owner_name": "lily.yang",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T203000",
-      "dtend": "20260513T205500",
-      "summary": "楊爍Arthur(Kids)(8)",
-      "owner_name": "wynn.wu",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260513T210000",
-      "dtend": "20260513T212500",
-      "summary": "Wanju Chen",
-      "owner_name": "joyce.wei",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T133000",
-      "dtend": "20260514T135500",
-      "summary": "王全權",
-      "owner_name": "joyce.wei",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T140000",
-      "dtend": "20260514T142500",
-      "summary": "黃奎翰",
-      "owner_name": "kyle.chiang",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T150000",
-      "dtend": "20260514T152500",
-      "summary": "戴妘秦",
-      "owner_name": "joyce.wei",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T173000",
-      "dtend": "20260514T175500",
-      "summary": "##Nydia(Kids)(8)(摺紙)",
-      "owner_name": "rita.hou",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260514T183000",
-      "dtend": "20260514T185500",
-      "summary": "魏于昕(Kids)",
-      "owner_name": "jordan.lee",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260514T190000",
-      "dtend": "20260514T192500",
-      "summary": "賴宥安",
-      "owner_name": "jordan.lee",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T190000",
-      "dtend": "20260514T192500",
-      "summary": "Nana(MGM)(kids)(4)",
-      "owner_name": "jordan.lee",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260514T200000",
-      "dtend": "20260514T202500",
-      "summary": "劉世凱",
-      "owner_name": "jordan.lee",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260514T200000",
-      "dtend": "20260514T202500",
-      "summary": "##Leo(Kids)(7)(摺紙)",
-      "owner_name": "rita.hou",
-      "cal": "Kids"
-    },
-    {
-      "dtstart": "20260514T210000",
-      "dtend": "20260514T212500",
-      "summary": "單乙安Cindy",
-      "owner_name": "joyce.wei",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260515T200000",
-      "dtend": "20260515T202500",
-      "summary": "向日葵",
-      "owner_name": "jordan.lee",
-      "cal": "Adult"
-    },
-    {
-      "dtstart": "20260515T213000",
-      "dtend": "20260515T215500",
-      "summary": "呂妤心",
-      "owner_name": "jordan.lee",
-      "cal": "Adult"
     }
   ]
 }
