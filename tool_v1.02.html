@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETalking Demo Bridge v1.0.2</title>
+<!-- ════════════════════════════════════════════════════
+     ETalking Demo Bridge (對接轉檔工具)
+     檔名:tool.html (固定檔名,Workstation 連結指向此)
+     ────────────────────────────────────────────────────
+     CURRENT:  v1.0.2  (2026-05-07)
+     ────────────────────────────────────────────────────
+     CHANGELOG:
+       v1.0.2 - 統計卡標籤改名:「輸入總筆數」→「Scanner 原始」
+                                「輸出 events」→「有效 Demo 業績」
+                 新增「減損對照公式」: Scanner 原始 - 過濾項 = 有效業績
+                 (一目了然 186→170 中間扣掉哪些)
+       v1.0.1 - 二次 demo 預設過濾 (FILTER_FOLLOWUP=true)
+                 不算進 Workstation 業績統計
+       v1.0.0 - 初版
+     ────────────────────────────────────────────────────
+     用途:把 etalking-allinone-scanner 產出的 JSON
+          轉成 Workstation 期待的 demo-latest.json 格式
+     流程:貼 JSON → 預覽轉換結果 → 下載 demo-latest.json
+          → 放到 Workstation HTML 同目錄
+     未來規劃:tool.html 將自動把轉換結果推到 GAS
+              Workstation 永遠吃 GAS,不再需要本機 demo-latest.json
+     ════════════════════════════════════════════════════ -->
+<script>
+window.APP_VERSION = 'v1.0.2';
+(function(){
+  try{
+    var t = localStorage.getItem('etalking_theme') || 'dark';
+    if (t!=='light' && t!=='dark') t='dark';
+    document.documentElement.dataset.theme = t;
+  }catch(e){}
+})();
+</script>
+<style>
+:root[data-theme="dark"]{
+  --bg-1:#0f1419; --bg-2:#1a2028; --bg-3:#242c38;
+  --border:#2d3748; --border-light:#3d4858;
+  --text-0:#e8edf2; --text-1:#c0c8d0; --text-2:#94a3b8;
+  --accent:#4f6ef7; --accent-hover:#6b87ff;
+  --green:#10b981; --amber:#f59e0b; --red:#ef4444; --cyan:#06b6d4;
+  --code-bg:#0a0e13;
+}
+:root[data-theme="light"]{
+  --bg-1:#ffffff; --bg-2:#f7f9fc; --bg-3:#eef2f7;
+  --border:#d8dee5; --border-light:#c0c8d0;
+  --text-0:#1a2028; --text-1:#3d4858; --text-2:#6b7588;
+  --accent:#2c5cdc; --accent-hover:#1d4dcc;
+  --green:#0a8a5e; --amber:#c47800; --red:#c8302d; --cyan:#0d8fa3;
+  --code-bg:#f0f4f8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg-1);color:var(--text-0)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;
+  font-size:14px; line-height:1.6;
+  padding:24px;
+}
+.wrap{max-width:1100px; margin:0 auto}
+header{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px; padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+h1{font-size:20px; margin:0; font-weight:700}
+.ver{color:var(--text-2); font-size:12px; margin-left:8px; font-weight:400}
+.theme-btn{
+  background:var(--bg-2); border:1px solid var(--border);
+  color:var(--amber); width:32px; height:32px; border-radius:8px;
+  cursor:pointer; font-size:14px;
+}
+.theme-btn:hover{background:var(--bg-3)}
+
+.panel{
+  background:var(--bg-2); border:1px solid var(--border);
+  border-radius:10px; padding:18px 20px; margin-bottom:16px;
+}
+h2{font-size:15px; margin:0 0 12px; color:var(--accent); font-weight:700}
+h3{font-size:13px; margin:14px 0 8px; color:var(--text-0)}
+p{margin:6px 0; color:var(--text-1)}
+.note{
+  background:color-mix(in srgb, var(--amber) 12%, var(--bg-2));
+  border-left:3px solid var(--amber);
+  padding:10px 14px; border-radius:6px;
+  font-size:13px; color:var(--text-1);
+  margin:8px 0;
+}
+.note-ok{
+  background:color-mix(in srgb, var(--green) 12%, var(--bg-2));
+  border-left:3px solid var(--green);
+}
+.note-err{
+  background:color-mix(in srgb, var(--red) 12%, var(--bg-2));
+  border-left:3px solid var(--red);
+}
+
+textarea{
+  width:100%; min-height:200px; max-height:400px;
+  background:var(--code-bg); color:var(--text-0);
+  border:1px solid var(--border); border-radius:6px;
+  padding:12px; font-family:"JetBrains Mono",Menlo,Consolas,monospace;
+  font-size:12px; line-height:1.5; resize:vertical;
+}
+textarea:focus{outline:0; border-color:var(--accent)}
+
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 4px}
+button.btn{
+  background:var(--accent); color:#fff;
+  border:0; border-radius:6px;
+  padding:10px 18px; font-size:13px; font-weight:600;
+  cursor:pointer; transition:.15s;
+  font-family:inherit;
+}
+button.btn:hover{background:var(--accent-hover)}
+button.btn:disabled{opacity:.5; cursor:not-allowed}
+button.btn.green{background:var(--green)}
+button.btn.amber{background:var(--amber)}
+button.btn.ghost{background:transparent; color:var(--text-1); border:1px solid var(--border)}
+button.btn.ghost:hover{background:var(--bg-3)}
+
+.stats-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+  gap:10px; margin:10px 0;
+}
+.stat{
+  background:var(--bg-3); border:1px solid var(--border);
+  border-radius:8px; padding:10px 14px;
+}
+.stat-label{font-size:11px; color:var(--text-2); margin-bottom:4px}
+.stat-val{font-size:18px; font-weight:700; color:var(--text-0)}
+.stat.warn .stat-val{color:var(--amber)}
+.stat.green .stat-val{color:var(--green)}
+.stat.red .stat-val{color:var(--red)}
+
+table{width:100%; border-collapse:collapse; font-size:12px; margin-top:8px}
+th,td{
+  padding:6px 8px; text-align:left; border-bottom:1px solid var(--border);
+}
+th{color:var(--text-2); font-weight:600; background:var(--bg-3)}
+tbody tr:hover{background:color-mix(in srgb, var(--accent) 6%, transparent)}
+.tbl-wrap{max-height:300px; overflow:auto; border:1px solid var(--border); border-radius:6px}
+
+code{
+  background:var(--code-bg); padding:2px 6px; border-radius:4px;
+  font-family:"JetBrains Mono",Menlo,Consolas,monospace; font-size:12px;
+  color:var(--cyan);
+}
+
+.flow-step{
+  display:flex; align-items:flex-start; gap:12px; margin:6px 0;
+}
+.flow-step .num{
+  flex:0 0 24px; height:24px; border-radius:50%;
+  background:var(--accent); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700;
+}
+.flow-step .txt{flex:1; padding-top:2px}
+
+#tag-jim, #tag-backup, #tag-uncategorized{
+  display:inline-block; padding:1px 6px; border-radius:3px;
+  font-size:10px; font-weight:600; margin-left:4px;
+}
+#tag-jim{background:color-mix(in srgb, var(--red) 25%, transparent); color:var(--red)}
+#tag-backup{background:color-mix(in srgb, var(--amber) 25%, transparent); color:var(--amber)}
+#tag-uncategorized{background:color-mix(in srgb, var(--text-2) 25%, transparent); color:var(--text-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>ETalking Demo Bridge<span class="ver" id="ver">v?</span></h1>
+  <button class="theme-btn" id="btn-theme" title="切換主題">🌙</button>
+</header>
+
+<div class="panel">
+  <h2>使用流程</h2>
+  <div class="flow-step"><div class="num">1</div><div class="txt">跑 <code>etalking-allinone-scanner-v2.1.0.js</code> 取得完整 JSON</div></div>
+  <div class="flow-step"><div class="num">2</div><div class="txt">把整份 JSON 內容貼到下方輸入區</div></div>
+  <div class="flow-step"><div class="num">3</div><div class="txt">點「轉換」→ 預覽結果 → 點「下載 demo-latest.json」</div></div>
+  <div class="flow-step"><div class="num">4</div><div class="txt">把 <code>demo-latest.json</code> 放到 Workstation HTML 同目錄</div></div>
+</div>
+
+<div class="panel">
+  <h2>1. 貼上 Scanner JSON</h2>
+  <textarea id="input" placeholder='貼上 etalking-demo-merged-YYYY-MM-DD.json 完整內容...&#10;&#10;例如:&#10;[&#10;  {&#10;    "date": "2026-05-01",&#10;    "startTime": "13:30",&#10;    ...&#10;  },&#10;  ...&#10;]'></textarea>
+  <div class="btn-row">
+    <button class="btn" id="btn-convert">▶ 轉換</button>
+    <button class="btn ghost" id="btn-clear">清空</button>
+    <button class="btn ghost" id="btn-load-file">📂 從檔案載入</button>
+    <input type="file" id="file-input" accept=".json" style="display:none">
+  </div>
+  <div id="parse-status"></div>
+</div>
+
+<div class="panel" id="result-panel" style="display:none">
+  <h2>2. 轉換結果</h2>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-label">Scanner 原始</div><div class="stat-val" id="s-total">—</div></div>
+    <div class="stat green"><div class="stat-label">有效 Demo 業績</div><div class="stat-val" id="s-events">—</div></div>
+    <div class="stat green"><div class="stat-label">Adult</div><div class="stat-val" id="s-adult">—</div></div>
+    <div class="stat green"><div class="stat-label">Kids</div><div class="stat-val" id="s-kids">—</div></div>
+    <div class="stat red"><div class="stat-label">過濾 Jim</div><div class="stat-val" id="s-jim">—</div></div>
+    <div class="stat warn"><div class="stat-label">過濾備份區</div><div class="stat-val" id="s-backup">—</div></div>
+    <div class="stat warn"><div class="stat-label">過濾未分類</div><div class="stat-val" id="s-uncat">—</div></div>
+    <div class="stat warn"><div class="stat-label">過濾二次 demo</div><div class="stat-val" id="s-followup">—</div></div>
+  </div>
+  <div id="reduction-formula" style="margin-top:12px"></div>
+  <div id="filter-detail" style="margin-top:10px"></div>
+
+  <h3 style="margin-top:18px">前 10 筆 events 預覽</h3>
+  <div class="tbl-wrap"><table id="preview-tbl"><thead><tr>
+    <th>dtstart</th><th>summary</th><th>owner_name</th><th>cal</th>
+  </tr></thead><tbody></tbody></table></div>
+
+  <div class="btn-row">
+    <button class="btn green" id="btn-download">⬇ 下載 demo-latest.json</button>
+    <button class="btn ghost" id="btn-copy">複製到剪貼簿</button>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>過濾規則</h2>
+  <p><span id="tag-jim">過濾 Jim</span> Jim 是業務主管,不應有業績,任何掛名 Jim 的紀錄都視為測試資料、剃除</p>
+  <p><span id="tag-backup">過濾備份區</span> 異常時段(KPI 表 13:00 ~ 21:30 範圍外,例如 22:00 / 03:00 / 08:00)的紀錄不納入 Workstation</p>
+  <p><span id="tag-uncategorized">過濾未分類</span> KPI Map 與會員姓名 fallback 都對不到的紀錄(無法判斷 Adult/Kids)會被剃除,因為 Workstation 必須有 cal 欄位</p>
+  <p style="color:var(--text-2); font-size:12px; margin-top:8px">二次 demo (isFollowUp=true) 預設過濾, 不算進業績統計</p>
+</div>
+
+<script>
+const APP_VERSION = window.APP_VERSION || 'v?';
+document.getElementById('ver').textContent = APP_VERSION;
+
+// Theme
+const THEME_LS = 'etalking_theme';
+function getTheme(){try{return localStorage.getItem(THEME_LS)||'dark'}catch(e){return 'dark'}}
+function setTheme(t){
+  if(t!=='light'&&t!=='dark') t='dark';
+  document.documentElement.dataset.theme=t;
+  try{localStorage.setItem(THEME_LS,t)}catch(e){}
+  document.getElementById('btn-theme').textContent = t==='dark'?'🌙':'☀';
+}
+setTheme(getTheme());
+document.getElementById('btn-theme').onclick = () => setTheme(getTheme()==='dark'?'light':'dark');
+
+// 過濾規則
+const FILTERED_OWNERS = ['jim'];
+const FILTER_BACKUP = true;
+const FILTER_FOLLOWUP = true;       // ★ v1.0.1 二次 demo 預設過濾 (不算進業績)
+const FILTER_UNCATEGORIZED = true;  // 此處設 true:沒 category 的紀錄無法給 Workstation 用 (沒 cal 會跳過)
+
+// "Joyce Wei" → "joyce.wei", "homer hsu" → "homer.hsu"
+function toAccountFormat(en, cn){
+  if(en && en.trim()){
+    return en.trim().toLowerCase().replace(/\s+/g, '.');
+  }
+  return (cn || 'unknown').trim().toLowerCase();
+}
+
+function mapCategory(cat){
+  const c = String(cat || '').trim();
+  if(c === 'Kids') return 'Kids';
+  if(c === '成人') return 'Adult';
+  return null;
+}
+
+function toIcsDateTime(dateStr, timeStr, offsetMinutes){
+  const [Y, M, D] = dateStr.split('-').map(Number);
+  const [h, m] = timeStr.split(':').map(Number);
+  const total = h * 60 + m + (offsetMinutes || 0);
+  const newH = Math.floor(total / 60);
+  const newM = total % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${Y}${pad(M)}${pad(D)}T${pad(newH)}${pad(newM)}00`;
+}
+
+let _lastResult = null;
+
+function transform(records){
+  const events = [];
+  const stats = {
+    total: records.length,
+    kids: 0, adult: 0,
+    filtered_jim: 0, filtered_backup: 0,
+    filtered_followup: 0, filtered_uncategorized: 0,
+    followup_kept: 0,
+    skipped_no_date: 0, skipped_no_owner: 0, skipped_no_category: 0,
+  };
+
+  // 收集被過濾的紀錄細節 (給 UI 顯示)
+  const detail = { jim: [], backup: [], uncategorized: [] };
+
+  for(const r of records){
+    if(FILTER_BACKUP && r.isBackup){
+      stats.filtered_backup++;
+      detail.backup.push(r);
+      continue;
+    }
+    if(FILTER_FOLLOWUP && r.isFollowUp){
+      stats.filtered_followup++;
+      continue;
+    }
+    if(!r.date || !r.startTime){
+      stats.skipped_no_date++;
+      continue;
+    }
+    if(!r.salesDemoEN && !r.salesDemoCN){
+      stats.skipped_no_owner++;
+      continue;
+    }
+
+    const ownerAccount = toAccountFormat(r.salesDemoEN, r.salesDemoCN);
+    if(FILTERED_OWNERS.includes(ownerAccount.split('.')[0])){
+      stats.filtered_jim++;
+      detail.jim.push(r);
+      continue;
+    }
+
+    const cal = mapCategory(r.category);
+    if(!cal){
+      if(FILTER_UNCATEGORIZED){
+        stats.filtered_uncategorized++;
+        detail.uncategorized.push(r);
+        continue;
+      } else {
+        stats.skipped_no_category++;
+        continue;
+      }
+    }
+    if(cal === 'Kids') stats.kids++;
+    else stats.adult++;
+
+    if(r.isFollowUp) stats.followup_kept++;
+
+    events.push({
+      dtstart: toIcsDateTime(r.date, r.startTime, 0),
+      dtend:   toIcsDateTime(r.date, r.startTime, 25),
+      summary: r.studentName || '',
+      owner_name: ownerAccount,
+      cal: cal,
+    });
+  }
+
+  events.sort((a, b) => a.dtstart < b.dtstart ? -1 : a.dtstart > b.dtstart ? 1 : 0);
+
+  return {
+    payload: {
+      ok: true,
+      updated: new Date().toISOString(),
+      generatedBy: 'etalking-demo-bridge ' + APP_VERSION,
+      count: stats,
+      events: events,
+    },
+    stats: stats,
+    detail: detail,
+  };
+}
+
+function showStatus(msg, kind){
+  const el = document.getElementById('parse-status');
+  el.innerHTML = '';
+  if(!msg){return;}
+  const cls = kind === 'err' ? 'note note-err' : kind === 'ok' ? 'note note-ok' : 'note';
+  el.innerHTML = `<div class="${cls}">${msg}</div>`;
+}
+
+document.getElementById('btn-clear').onclick = () => {
+  document.getElementById('input').value = '';
+  document.getElementById('result-panel').style.display = 'none';
+  showStatus('');
+};
+
+document.getElementById('btn-load-file').onclick = () => {
+  document.getElementById('file-input').click();
+};
+document.getElementById('file-input').onchange = (e) => {
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById('input').value = ev.target.result;
+    showStatus(`已載入檔案 "${f.name}" (${(f.size/1024).toFixed(1)} KB)`, 'ok');
+  };
+  reader.readAsText(f, 'UTF-8');
+};
+
+document.getElementById('btn-convert').onclick = () => {
+  const raw = document.getElementById('input').value.trim();
+  if(!raw){
+    showStatus('請先貼上 JSON 內容', 'err');
+    return;
+  }
+  let data;
+  try{
+    data = JSON.parse(raw);
+  }catch(err){
+    showStatus(`JSON 解析失敗:${err.message}`, 'err');
+    return;
+  }
+  if(!Array.isArray(data)){
+    showStatus('JSON 格式錯誤:預期是陣列', 'err');
+    return;
+  }
+  if(data.length === 0){
+    showStatus('輸入是空陣列', 'err');
+    return;
+  }
+
+  const result = transform(data);
+  _lastResult = result;
+
+  // 填入統計
+  document.getElementById('s-total').textContent = result.stats.total;
+  document.getElementById('s-events').textContent = result.payload.events.length;
+  document.getElementById('s-adult').textContent = result.stats.adult;
+  document.getElementById('s-kids').textContent = result.stats.kids;
+  document.getElementById('s-jim').textContent = result.stats.filtered_jim;
+  document.getElementById('s-backup').textContent = result.stats.filtered_backup;
+  document.getElementById('s-uncat').textContent = result.stats.filtered_uncategorized;
+  document.getElementById('s-followup').textContent = result.stats.filtered_followup;
+
+  // ★ v1.0.2 減損對照公式: Scanner 原始 - 過濾項 = 有效業績
+  const r = result.stats;
+  const totalFiltered = r.filtered_jim + r.filtered_backup + r.filtered_uncategorized + r.filtered_followup;
+  const formulaParts = [];
+  if(r.filtered_backup > 0) formulaParts.push(`<span style="color:var(--amber)">備份 ${r.filtered_backup}</span>`);
+  if(r.filtered_jim > 0) formulaParts.push(`<span style="color:var(--red)">Jim ${r.filtered_jim}</span>`);
+  if(r.filtered_uncategorized > 0) formulaParts.push(`<span style="color:var(--text-2)">未分類 ${r.filtered_uncategorized}</span>`);
+  if(r.filtered_followup > 0) formulaParts.push(`<span style="color:var(--amber)">二次 ${r.filtered_followup}</span>`);
+  const formulaHtml = formulaParts.length > 0
+    ? `<div class="note note-ok" style="font-family:'JetBrains Mono',Menlo,monospace; font-size:13px">
+         <strong>${r.total}</strong> Scanner 原始
+         &nbsp;−&nbsp; ${formulaParts.join(' &nbsp;−&nbsp; ')}
+         &nbsp;=&nbsp; <strong style="color:var(--green); font-size:15px">${result.payload.events.length}</strong> 有效 Demo 業績
+       </div>`
+    : `<div class="note note-ok">無減損, ${r.total} 筆全部納入</div>`;
+  document.getElementById('reduction-formula').innerHTML = formulaHtml;
+
+  // 過濾細節
+  const detailHtml = [];
+  if(result.detail.jim.length > 0){
+    detailHtml.push(`<div class="note">過濾掉 Jim 的紀錄 (${result.detail.jim.length} 筆):<br>` +
+      result.detail.jim.map(r => `&nbsp;&nbsp;${r.date} ${r.startTime} | ${r.studentName.slice(0, 20)} | 教室 ${r.classroomId}`).join('<br>') +
+      '</div>');
+  }
+  if(result.detail.backup.length > 0){
+    detailHtml.push(`<div class="note">過濾掉備份區紀錄 (${result.detail.backup.length} 筆,異常時段):<br>` +
+      result.detail.backup.map(r => `&nbsp;&nbsp;${r.date} ${r.startTime} | ${r.studentName.slice(0, 25)}`).join('<br>') +
+      '</div>');
+  }
+  if(result.detail.uncategorized.length > 0){
+    detailHtml.push(`<div class="note">過濾掉未分類紀錄 (${result.detail.uncategorized.length} 筆,無 Adult/Kids 旗標):<br>` +
+      result.detail.uncategorized.map(r => `&nbsp;&nbsp;${r.date} ${r.startTime} | ${r.studentName.slice(0, 25)}`).join('<br>') +
+      '</div>');
+  }
+  document.getElementById('filter-detail').innerHTML = detailHtml.join('');
+
+  // 預覽前 10 筆
+  const tbody = document.querySelector('#preview-tbl tbody');
+  tbody.innerHTML = '';
+  result.payload.events.slice(0, 10).forEach(ev => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${ev.dtstart}</td><td>${ev.summary.replace(/</g,'&lt;')}</td><td>${ev.owner_name}</td><td>${ev.cal}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('result-panel').style.display = 'block';
+  showStatus(`✓ 轉換完成,共 ${result.payload.events.length} 筆 events 可餵 Workstation`, 'ok');
+};
+
+document.getElementById('btn-download').onclick = () => {
+  if(!_lastResult) return;
+  const blob = new Blob([JSON.stringify(_lastResult.payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'demo-latest.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+document.getElementById('btn-copy').onclick = async () => {
+  if(!_lastResult) return;
+  try{
+    await navigator.clipboard.writeText(JSON.stringify(_lastResult.payload, null, 2));
+    showStatus('✓ 已複製到剪貼簿', 'ok');
+  }catch(e){
+    showStatus('複製失敗:' + e.message, 'err');
+  }
+};
+</script>
+</body>
+</html>
