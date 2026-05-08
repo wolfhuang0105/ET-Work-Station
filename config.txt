@@ -3,5 +3,6 @@
   "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1534602765#gid=1534602765",
   "sched_label": "2026/04 班表",
   "sheet_url_next": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=2113715679#gid=2113715679",
-  "sched_label_next": "2026/05 班表"
+  "sched_label_next": "2026/05 班表",
+  "gas_url_new": "https://script.google.com/macros/s/AKfycbw_FaKF45UUfwj1sO9BRZbd3bH4c2lr0nAtt9s9rIAfSmoWvhXDtTOU-GffPEA_rtI4/exec"
 }
