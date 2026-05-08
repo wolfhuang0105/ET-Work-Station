@@ -41,7 +41,7 @@
        v2.0    - Phase 2 真整合單檔
      ════════════════════════════════════════════════════ -->
 <script>
-window.APP_VERSION = 'v2.5.33';
+window.APP_VERSION = 'v2.5.33v1';
 (function(){
   try{
     var t = localStorage.getItem('etalking_theme') || 'dark';
@@ -2038,7 +2038,7 @@ async function loadDemoFromNew(){
       ...ev,
       _start: parseDT(ev.dtstart),
       _end: parseDT(ev.dtend),
-      _owner: ownerDisplay(ev.demo || ev.invite || ev.owner_name),
+      _owner: ownerDisplay((ev.demo || ev.invite || ev.owner_name || '').split(/\s+/)[0]),
       _cal: ev.cal,
     })).filter(ev => ev._start).sort((a,b) => a._start - b._start);
     setSyncStatus('demo', `NEW · ${VIEWER_STATE.events.length} 筆`, 'ok');
