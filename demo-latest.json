@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "updated": "2026-05-07T15:04:25.887Z",
-  "generatedBy": "etalking-demo-bridge v1.0.2",
+  "updated": "2026-05-08T04:36:39.480Z",
+  "generatedBy": "etalking-demo-bridge v1.0.3",
   "count": {
     "total": 166,
     "kids": 96,
@@ -9,11 +9,12 @@
     "filtered_jim": 2,
     "filtered_backup": 5,
     "filtered_followup": 8,
-    "filtered_uncategorized": 6,
+    "filtered_uncategorized": 0,
     "followup_kept": 0,
     "skipped_no_date": 0,
     "skipped_no_owner": 0,
-    "skipped_no_category": 0
+    "skipped_no_category": 0,
+    "events_total": 151
   },
   "events": [
     {
@@ -185,6 +186,13 @@
       "cal": "Kids"
     },
     {
+      "dtstart": "20260503T203000",
+      "dtend": "20260503T205500",
+      "summary": "林宥呈",
+      "owner_name": "lily.yang",
+      "cal": "Adult"
+    },
+    {
       "dtstart": "20260504T160000",
       "dtend": "20260504T162500",
       "summary": "Dora(Kids)(3)摺紙",
@@ -238,6 +246,13 @@
       "dtend": "20260504T205500",
       "summary": "王柏竣(Kids)",
       "owner_name": "jordan.lee",
+      "cal": "Kids"
+    },
+    {
+      "dtstart": "20260504T203000",
+      "dtend": "20260504T205500",
+      "summary": "Shawna(Kids)(6)摺紙",
+      "owner_name": "lily.yang",
       "cal": "Kids"
     },
     {
@@ -318,6 +333,13 @@
       "cal": "Kids"
     },
     {
+      "dtstart": "20260505T203000",
+      "dtend": "20260505T205500",
+      "summary": "Ethan(Kids)(5)(摺紙)(F)",
+      "owner_name": "joy.hung",
+      "cal": "Kids"
+    },
+    {
       "dtstart": "20260506T133000",
       "dtend": "20260506T135500",
       "summary": "鄭書函",
@@ -392,6 +414,13 @@
       "dtend": "20260506T202500",
       "summary": "倪沛筠Betty(kids)(10)",
       "owner_name": "luke.yang",
+      "cal": "Kids"
+    },
+    {
+      "dtstart": "20260506T203000",
+      "dtend": "20260506T205500",
+      "summary": "Phoenix 江若菲(Kids)(5)(摺紙)",
+      "owner_name": "alan.yang",
       "cal": "Kids"
     },
     {
@@ -644,6 +673,20 @@
       "dtend": "20260508T205500",
       "summary": "Liz(Kids)(8)",
       "owner_name": "kyle.chiang",
+      "cal": "Kids"
+    },
+    {
+      "dtstart": "20260508T203000",
+      "dtend": "20260508T205500",
+      "summary": "Ethan(Kids)(11)摺紙",
+      "owner_name": "wolf.huang",
+      "cal": "Kids"
+    },
+    {
+      "dtstart": "20260508T203000",
+      "dtend": "20260508T205500",
+      "summary": "Leo(Kids)(MGM)(4)(摺紙)(M)",
+      "owner_name": "andy.shen",
       "cal": "Kids"
     },
     {
