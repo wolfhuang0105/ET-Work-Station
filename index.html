@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETalking 工作站 v2.5.42</title>
+<title>ETalking 工作站 v2.5.43</title>
 <!-- ════════════════════════════════════════════════════
      ETalking 工作站(整合單檔)
      檔名格式:Etalking-WorkStation-v{APP_VERSION}.html
      ────────────────────────────────────────────────────
-     CURRENT:  v2.5.42  (2026-05-09)
+     CURRENT:  v2.5.43  (2026-05-26)
      ────────────────────────────────────────────────────
      CHANGELOG (只記功能里程碑,bug 修補不列):
        v2.5.42 - Modal 列表加第 5 個 tab「⚠ 過載 N」(動態出現):
@@ -90,7 +90,7 @@
        v2.0    - Phase 2 真整合單檔
      ════════════════════════════════════════════════════ -->
 <script>
-window.APP_VERSION = 'v2.5.42';
+window.APP_VERSION = 'v2.5.43';
 (function(){
   try{
     var t = localStorage.getItem('etalking_theme') || 'dark';
@@ -1888,10 +1888,10 @@ html[data-theme="light"] .cfg-panel{box-shadow:-8px 0 28px rgba(0,0,0,.14)}
       <button class="btn-sm" onclick="devResetMonth()" style="border-color:var(--amber);color:var(--amber)">重置月份</button>
       <button class="btn-sm" onclick="devClearLS()" style="border-color:var(--red);color:var(--red)">清空 LS</button>
     </div>
-    <div id="devConfirmRow" style="display:none;margin-top:8px;padding:8px;background:var(--bg-2);border-radius:6px">
-      <span style="font-size:12px;color:var(--amber)">⚠ 確定要執行嗎?</span>
-      <button class="btn-sm" id="devConfirmYes" style="margin-left:8px;border-color:var(--red);color:var(--red)">是</button>
-      <button class="btn-sm" id="devConfirmNo" style="margin-left:4px">否</button>
+    <div id="devConfirmRow" style="display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px;padding:8px;background:var(--bg-2);border-radius:6px">
+      <span style="font-size:12px;color:#E74C3C">⚠️ 確定清除全部 localStorage?</span>
+      <button class="btn-sm" id="devConfirmYes" style="border-color:var(--red);color:var(--red)">確定清除</button>
+      <button class="btn-sm" id="devConfirmNo">取消</button>
     </div>
     <div id="devPanel" style="display:none;margin-top:8px"></div>
     <pre id="devSt" style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:10px;color:var(--text-2);overflow-x:auto;display:none;max-height:200px;margin-top:8px"></pre>
@@ -2905,11 +2905,15 @@ function renderCalSchedBar(){
   _renderCalConfigInfoBar();
 }
 
-// Config 按鈕點擊：重新從 config URL 抓取
+// Config 按鈕點擊：重新從 config.txt 抓取(會先清掉 ensureConfigLoaded 的 promise cache，再走完整流程)
 function calRefetchConfig(){
   var now=new Date(),curMon=now.getFullYear()+'-'+(now.getMonth()+1);
-  el('warnbox').innerHTML='<div class="warn" style="background:#EEF3FF;border-color:#B0BCDC;color:#334480">⏳ 重新從 Config 載入班表…</div>';
-  _autoFetchDefaultSheet(curMon);
+  el('warnbox').innerHTML='<div class="warn" style="background:#EEF3FF;border-color:#B0BCDC;color:#334480">⏳ 重新從 config.txt 載入…</div>';
+  // 清掉 cache → 強制 ensureConfigLoaded 重 fetch config.txt
+  _configReady = null;
+  ensureConfigLoaded().then(function(){
+    _autoFetchDefaultSheet(curMon);
+  });
 }
 
 function switchSchedSrc(src){
@@ -3515,32 +3519,28 @@ function devShowLS(){
   out+='\nFILE_SCHED_MON: '+(FILE_SCHED_MON||'(無)');
   out+='\nLS_SCHED_MON: '+(LS_SCHED_MON_VAL||'(無)');
   out+='\nSCHED_SRC: '+SCHED_SRC+' | HOL_SRC: '+HOL_SRC;
-  el('devSt').textContent=out;
+  var stEl=el('devSt');stEl.textContent=out;stEl.style.display='block';
 }
 
 function devResetMonth(){
   localStorage.setItem(LS_SCHED_MON,'1900-1');
   LS_SCHED_MON_VAL='1900-1';
-  el('devSt').textContent='✅ 月份時間戳已重置，重新整理頁面即可觸發月份警告';
+  var stEl=el('devSt');stEl.textContent='✅ 月份時間戳已重置，重新整理頁面即可觸發月份警告';stEl.style.display='block';
 }
 
 function devClearLS(){
-  var st=el('devSt');
-  if(el('devConfirmRow')){el('devConfirmRow').remove();return;}
-  var row=document.createElement('div');
-  row.id='devConfirmRow';
-  row.style.cssText='display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap';
-  row.innerHTML='<span style="font-size:12px;color:#E74C3C">⚠️ 確定清除全部 localStorage？</span>'
-    +'<button class="btn-dev danger" id="devConfirmYes">確定清除</button>'
-    +'<button class="btn-dev" id="devConfirmNo">取消</button>';
-  st.parentNode.insertBefore(row,st);
+  var stEl=el('devSt');
+  var row=el('devConfirmRow');
+  // 已展開 → 收起來(再按一次取消)
+  if(row.style.display!=='none'){row.style.display='none';return;}
+  row.style.display='flex';
   el('devConfirmYes').onclick=function(){
     [LS_HOL,LS_HOL_TS,LS_SCHED,LS_SCHED_MON,'et_sched_src',LS_EXAM].forEach(function(k){localStorage.removeItem(k);});
-    row.remove();
-    st.textContent='✅ localStorage 已清除，重新整理中…';
+    row.style.display='none';
+    stEl.textContent='✅ localStorage 已清除，重新整理中…';stEl.style.display='block';
     setTimeout(function(){location.reload();},800);
   };
-  el('devConfirmNo').onclick=function(){row.remove();st.textContent='';};
+  el('devConfirmNo').onclick=function(){row.style.display='none';};
 }
 
 // 視窗縮放時重繪 bands
