@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETalking 工作站 v2.5.4318</title>
+<title>ETalking 工作站 v2.5.43</title>
 <!-- ════════════════════════════════════════════════════
      ETalking 工作站(整合單檔)
      檔名格式:Etalking-WorkStation-v{APP_VERSION}.html
@@ -11,6 +11,10 @@
      CURRENT:  v2.5.43  (2026-05-26)
      ────────────────────────────────────────────────────
      CHANGELOG (只記功能里程碑,bug 修補不列):
+       v2.5.43 - 班表解析支援「13點」班別 (原本只認「12點半」):
+                 - 班表新增 13點 上班選項, 解析規則同時認 12點半 OR 13點
+                 - sheets 模式: 判斷列是否含上班標記時兩種都算
+                 - 純文字模式: regex 與天數計算兩種標記等價 (用 match 計數防混合誤算)
        v2.5.42 - Modal 列表加第 5 個 tab「⚠ 過載 N」(動態出現):
                  - 只在當日有過載時才顯示這個 tab (沒過載 → 完全隱藏)
                  - tab 樣式為紅底白字, 跟其他 tab 形成視覺對比
@@ -3093,7 +3097,7 @@ function parseSched(raw,mode){
     var cnRe=/^[\u4e00-\u9fff]{2,5}$/,enRe=/^[A-Za-z]{2,15}$/,scanLimit=mode==='manual'?8:6;
     for(var ri2=0;ri2<rows.length;ri2++){
       var row=rows[ri2];
-      var hasW=row.some(function(c){return c.trim()==='12點半';});if(!hasW)continue;
+      var hasW=row.some(function(c){var v=c.trim();return v==='12點半'||v==='13點';});if(!hasW)continue;
       var ci2=-1;
       for(var i=0;i<Math.min(row.length-1,scanLimit);i++){if(cnRe.test(row[i].trim())&&enRe.test((row[i+1]||'').trim())&&row[i].trim()!=='姓名'){ci2=i;break;}}
       if(ci2<0)continue;
@@ -3106,8 +3110,8 @@ function parseSched(raw,mode){
   }else{
     partial=true;
     var wdm=raw.match(/英文名(星期[一二三四五六日])/);if(wdm)fdw=WDMAP[wdm[1]]||1;
-    var er=/(WH\d+\s*)?(OK)([\u4e00-\u9fff]{2,5})([A-Za-z]{2,15})((?:12點半)*)/g,em;
-    while((em=er.exec(raw))!==null)if(em[3]!=='姓名')emps.push({chn:em[3],eng:em[4],att:null,wkCount:em[5].split('12點半').length-1});
+    var er=/(WH\d+\s*)?(OK)([\u4e00-\u9fff]{2,5})([A-Za-z]{2,15})((?:12點半|13點)*)/g,em;
+    while((em=er.exec(raw))!==null)if(em[3]!=='姓名')emps.push({chn:em[3],eng:em[4],att:null,wkCount:(em[5].match(/12點半|13點/g)||[]).length});
     if(!emps.length)throw '找不到員工資料';
   }
   return{month:month,year:year,totalDays:totalDays,fdw:fdw,emps:emps,partial:partial,mode:mode};
