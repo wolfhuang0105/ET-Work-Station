@@ -1,9 +1,9 @@
 {
   "holiday_api": "https://api.airbase.online/calendar/v1/holiday/2026.json",
-  "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=2113715679#gid=2113715679",
-  "sched_label": "2026/05 班表",
-  "sheet_url_next": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=247678463#gid=247678463",
-  "sched_label_next": "2026/06 班表",
+  "sheet_url": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=247678463#gid=247678463",
+  "sched_label": "2026/06 班表",
+  "sheet_url_next": "https://docs.google.com/spreadsheets/d/13SrI50MGBAJHcRqFXa2TT5EDki3EGd0YL5wAGKXzPuw/edit?gid=1654362437#gid=1654362437",
+  "sched_label_next": "2026/07 班表",
   "gas_url_old": "https://script.google.com/macros/s/AKfycbw3gE5ibBUPdzSmaXnyQsUrPmE8Lf3JEZ5GxYkRCe37FxZVh9jqLPpqsF917mHcFi3cXQ/exec",
   "gas_url_new": "https://script.google.com/macros/s/AKfycbw_FaKF45UUfwj1sO9BRZbd3bH4c2lr0nAtt9s9rIAfSmoWvhXDtTOU-GffPEA_rtI4/exec"
 }
